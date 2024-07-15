@@ -36,3 +36,39 @@ def sum(a, b):
     return a + b
 
 print(sum(10, 10))
+
+
+## Class decorator
+
+def log_methods(cls):
+    # Get all methods of the class
+    for name, method in vars(cls).items():
+        # Check if it's a method (excluding __dunder__ methods)
+        if callable(method) and not name.startswith("__"):
+            # Create a wrapper function to log method calls
+            def wrapper(self, *args, **kwargs):
+                print(f"Calling {name} with args: {args}, kwargs: {kwargs}")
+                result = method(self, *args, **kwargs)
+                print(f"{name} returned: {result}")
+                return result
+            
+            # Replace the original method with the wrapper
+            setattr(cls, name, wrapper)
+    
+    return cls
+
+# Applying the class decorator
+@log_methods
+class Calculator:
+    def add(self, a, b):
+        return a + b
+    
+    def subtract(self, a, b):
+        return a - b
+
+# Using the decorated class
+calc = Calculator()
+print(calc.add(5, 3))
+print(calc.subtract(8, 2))
+
+
